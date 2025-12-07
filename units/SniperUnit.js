@@ -3,7 +3,7 @@
  */
 class SniperUnit extends BaseUnit {
     static COST = 50;
-    static SPAWN_COOLDOWN = 2500;
+    static SPAWN_COOLDOWN = 10000;
     static SIZE = 30;
     static SPEED = 0.6;
     static HEALTH = 60;

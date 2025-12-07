@@ -3,7 +3,7 @@
  */
 class SuicideBomberUnit extends BaseUnit {
     static COST = 30;
-    static SPAWN_COOLDOWN = 2000;
+    static SPAWN_COOLDOWN = 5000;
     static SIZE = 30;
     static SPEED = 3.5;
     static HEALTH = 5;

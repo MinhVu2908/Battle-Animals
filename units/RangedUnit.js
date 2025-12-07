@@ -3,7 +3,7 @@
  */
 class RangedUnit extends BaseUnit {
     static COST = 25;
-    static SPAWN_COOLDOWN = 1500;
+    static SPAWN_COOLDOWN = 5000;
     static SIZE = 30;
     static SPEED = 1.4;
     static HEALTH = 40;

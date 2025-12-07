@@ -3,7 +3,7 @@
  */
 class TankUnit extends BaseUnit {
     static COST = 10;
-    static SPAWN_COOLDOWN = 1500;
+    static SPAWN_COOLDOWN = 3000;
     static SIZE = 35;
     static SPEED = 1.2;
     static HEALTH = 1000;

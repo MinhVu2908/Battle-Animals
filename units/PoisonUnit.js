@@ -3,7 +3,7 @@
  */
 class PoisonUnit extends BaseUnit {
     static COST = 35;
-    static SPAWN_COOLDOWN = 1800;
+    static SPAWN_COOLDOWN = 7000;
     static SIZE = 30;
     static SPEED = 1.5;
     static HEALTH = 45;
