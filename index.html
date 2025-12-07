@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Animals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            width: 1200px;
+            height: 700px;
+            background: #16213e;
+            border: 3px solid #0f3460;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #game-header {
+            background: #0f3460;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            border-bottom: 2px solid #16213e;
+        }
+
+        #resources {
+            display: flex;
+            gap: 20px;
+            font-size: 16px;
+        }
+
+        #game-area {
+            flex: 1;
+            position: relative;
+            background: #16213e;
+            overflow: hidden;
+        }
+
+        #upgrade-money {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        #pause-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+            padding: 8px 12px;
+            font-size: 12px;
+            display: none; /* Hidden by default, shown when game starts */
+        }
+
+        #pause-button.show {
+            display: block;
+        }
+
+        #pause-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+        }
+
+        #pause-screen.show {
+            display: flex;
+        }
+
+        #pause-screen h2 {
+            color: white;
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #pause-screen p {
+            color: #f39c12;
+            font-size: 18px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #resume-button {
+            padding: 15px 40px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #resume-button:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+
+        #pause-screen .button-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #pause-return-to-menu-button {
+            padding: 15px 40px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #pause-return-to-menu-button:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: #16213e;
+        }
+
+        #controls {
+            background: #0f3460;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            border-top: 2px solid #16213e;
+            display: none; /* Hidden by default, shown when game starts */
+        }
+
+        #controls.show {
+            display: flex;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #ff6b7d;
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        #restart-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #restart-screen.show {
+            display: flex;
+        }
+
+        #restart-screen h2 {
+            color: white;
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #restart-screen .result-message {
+            color: #f39c12;
+            font-size: 24px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        #restart-screen .result-message.win {
+            color: #2ecc71;
+        }
+
+        #restart-screen .result-message.lose {
+            color: #e74c3c;
+        }
+
+        #restart-button {
+            padding: 15px 40px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #restart-button:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+
+        #restart-screen .button-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #return-to-menu-button {
+            padding: 15px 40px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #return-to-menu-button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        #menu-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        #menu-screen.hidden {
+            display: none;
+        }
+
+        #menu-screen h1 {
+            color: white;
+            font-size: 64px;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #menu-screen p {
+            color: #f39c12;
+            font-size: 18px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        #start-button {
+            padding: 20px 60px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #start-button:hover {
+            background: #27ae60;
+            transform: scale(1.1);
+        }
+
+        #configure-slots-button {
+            padding: 15px 40px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        #configure-slots-button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        #slot-config-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.98);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        #slot-config-screen.show {
+            display: flex;
+        }
+
+        #slot-config-screen h2 {
+            color: white;
+            font-size: 36px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #slot-config-screen .instructions {
+            color: #f39c12;
+            font-size: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        #slot-config-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .slot-config-item {
+            background: #0f3460;
+            border: 2px solid #16213e;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slot-config-item:hover {
+            border-color: #3498db;
+            transform: scale(1.05);
+        }
+
+        .slot-config-item.selected {
+            border-color: #2ecc71;
+            background: #1a4d3a;
+        }
+
+        .slot-config-item .slot-number {
+            color: #f39c12;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .slot-config-item .slot-unit {
+            color: white;
+            font-size: 14px;
+        }
+
+        .slot-config-item .slot-empty {
+            color: #888;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        #unit-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .unit-option {
+            padding: 12px 24px;
+            background: #16213e;
+            color: white;
+            border: 2px solid #0f3460;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .unit-option:hover {
+            background: #1e3a5e;
+            border-color: #3498db;
+        }
+
+        .unit-option.selected {
+            background: #2ecc71;
+            border-color: #27ae60;
+        }
+
+        .unit-option.unavailable {
+            background: #555;
+            border-color: #333;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .unit-option.unavailable:hover {
+            background: #555;
+            border-color: #333;
+        }
+
+        #back-to-menu-button {
+            padding: 15px 40px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #back-to-menu-button:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        #level-select-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.98);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2500;
+        }
+
+        #level-select-screen.show {
+            display: flex;
+        }
+
+        #level-select-screen h2 {
+            color: white;
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        #level-select-container {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .level-nav-arrow {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .level-nav-arrow:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .level-nav-arrow:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .level-card {
+            width: 200px;
+            height: 250px;
+            background: #0f3460;
+            border: 3px solid #16213e;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .level-card:hover:not(.locked) {
+            border-color: #3498db;
+            transform: scale(1.05);
+        }
+
+        .level-card.locked {
+            background: #1a1a2e;
+            border-color: #333;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .level-card.selected {
+            border-color: #2ecc71;
+            background: #1a4d3a;
+        }
+
+        .level-card .level-number {
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .level-card.locked .level-number {
+            color: #888;
+        }
+
+        .level-card .level-label {
+            color: #f39c12;
+            font-size: 18px;
+        }
+
+        .level-card.locked .level-label {
+            color: #666;
+        }
+
+        .level-card .lock-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #888;
+            font-size: 24px;
+        }
+
+        #start-level-button {
+            padding: 15px 40px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #start-level-button:hover:not(:disabled) {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+
+        #start-level-button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        #back-from-level-select-button {
+            padding: 12px 30px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        #back-from-level-select-button:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="game-header">
+            <h2>Battle Animals</h2>
+            <div id="resources">
+                <div>Level: <span id="level">1</span></div>
+                <div>Money: <span id="money">100</span></div>
+            </div>
+        </div>
+        
+        <div id="game-area">
+            <div id="menu-screen">
+                <h1>Battle Animals</h1>
+                <p>Defend your base and destroy the enemy!</p>
+                <button id="configure-slots-button">Configure Unit Slots</button>
+                <button id="start-button">Start Game</button>
+            </div>
+            <div id="slot-config-screen">
+                <h2>Configure Unit Slots</h2>
+                <p class="instructions">Click a slot (1-9) to select it, then click a unit type to assign it. Each unit type can only be added once. Click a selected slot again to clear it, or click another slot to swap/move units.</p>
+                <div id="slot-config-container"></div>
+                <div id="unit-selection">
+                    <button class="unit-option" data-unit="MeleeUnit">Melee Unit (Cost: 5)</button>
+                    <button class="unit-option" data-unit="RangedUnit">Ranged Unit (Cost: 25)</button>
+                    <button class="unit-option" data-unit="SuicideBomberUnit">Bomber Unit (Cost: 30)</button>
+                    <button class="unit-option" data-unit="TankUnit">Tank Unit (Cost: 10)</button>
+                    <button class="unit-option" data-unit="SniperUnit">Sniper Unit (Cost: 50)</button>
+                    <button class="unit-option" data-unit="PoisonUnit">Poison Unit (Cost: 35)</button>
+                </div>
+                <button id="back-to-menu-button">Back to Menu</button>
+            </div>
+            <div id="level-select-screen">
+                <h2>Select Level</h2>
+                <div id="level-select-container">
+                    <button class="level-nav-arrow" id="level-nav-left">‹</button>
+                    <div id="level-card-container"></div>
+                    <button class="level-nav-arrow" id="level-nav-right">›</button>
+                </div>
+                <button id="start-level-button">Start Level</button>
+                <button id="back-from-level-select-button">Back to Menu</button>
+            </div>
+            <audio id="background-music" loop>
+                <source src="music/91476_Glorious_morning.mp3" type="audio/mpeg">
+            </audio>
+            <canvas id="game-canvas"></canvas>
+            <button id="pause-button">Pause</button>
+            <div id="pause-screen">
+                <h2>Game Paused</h2>
+                <p>What would you like to do?</p>
+                <div class="button-container">
+                    <button id="resume-button">Resume</button>
+                    <button id="pause-return-to-menu-button">Return to Menu</button>
+                </div>
+            </div>
+            <div id="restart-screen">
+                <h2>Level Complete</h2>
+                <div id="result-message" class="result-message"></div>
+                <div class="button-container">
+                    <button id="restart-button">Restart</button>
+                    <button id="return-to-menu-button" style="display: none;">Return to Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="controls">
+            <button id="spawn-unit">Spawn Unit (Cost: 10)</button>
+            <button id="spawn-tank">Spawn Tank (Cost: 40)</button>
+            <button id="spawn-ranged">Spawn Ranged (Cost: 25)</button>
+            <button id="spawn-bomber">Spawn Bomber (Cost: 30)</button>
+            
+        </div>
+    </div>
+
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    
+    <!-- Game State -->
+    <script src="gameState.js"></script>
+    
+    <!-- Unit Classes -->
+    <script src="units/BaseUnit.js"></script>
+    <script src="units/MeleeUnit.js"></script>
+    <script src="units/Projectile.js"></script>
+    <script src="units/RangedUnit.js"></script>
+    <script src="units/Explosion.js"></script>
+    <script src="units/SuicideBomberUnit.js"></script>
+    <script src="units/TankUnit.js"></script>
+    <script src="units/SniperUnit.js"></script>
+    <script src="units/PoisonUnit.js"></script>
+    
+    <!-- Game Logic -->
+    <script src="logic/spawning.js"></script>
+    <script src="logic/combat.js"></script>
+    <script src="logic/upgrades.js"></script>
+    <script src="logic/gameManagement.js"></script>
+    <script src="logic/gameLoop.js"></script>
+    
+    <!-- Rendering -->
+    <script src="rendering/drawing.js"></script>
+    <script src="rendering/ui.js"></script>
+    
+    <!-- Main Game Entry Point -->
+    <script src="game.js"></script>
+</body>
+</html>
