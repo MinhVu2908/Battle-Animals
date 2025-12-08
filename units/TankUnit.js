@@ -2,7 +2,7 @@
  * Tank Unit Class
  */
 class TankUnit extends BaseUnit {
-    static COST = 10;
+    static COST = 150;
     static SPAWN_COOLDOWN = 3000;
     static SIZE = 35;
     static SPEED = 1.2;

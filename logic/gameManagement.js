@@ -95,8 +95,8 @@ function restartGame() {
         y: CONFIG.GROUND_Y - CONFIG.BASE_HEIGHT,
         width: CONFIG.BASE_WIDTH,
         height: CONFIG.BASE_HEIGHT,
-        health: 2000,
-        maxHealth: 2000,
+        health: 500,
+        maxHealth: 500,
         lastAttack: 0,
         attackingUnits: []
     };
@@ -105,8 +105,8 @@ function restartGame() {
         y: CONFIG.GROUND_Y - CONFIG.BASE_HEIGHT,
         width: CONFIG.BASE_WIDTH,
         height: CONFIG.BASE_HEIGHT,
-        health: 2000,
-        maxHealth: 2000,
+        health: 500,
+        maxHealth: 500,
         lastAttack: 0,
         attackingUnits: []
     };

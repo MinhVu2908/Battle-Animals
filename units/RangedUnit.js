@@ -2,7 +2,7 @@
  * Ranged Unit Class
  */
 class RangedUnit extends BaseUnit {
-    static COST = 25;
+    static COST = 200;
     static SPAWN_COOLDOWN = 5000;
     static SIZE = 30;
     static SPEED = 1.4;

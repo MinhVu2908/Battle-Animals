@@ -3,7 +3,7 @@
  */
 class MeleeUnit extends BaseUnit {
     // Unit Stats
-    static COST = 5;
+    static COST = 50;
     static SPAWN_COOLDOWN = 2000; // Cooldown between spawns in ms
     static SIZE = 30;
     static SPEED = 2;

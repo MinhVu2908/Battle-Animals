@@ -2,7 +2,7 @@
  * Sniper Unit Class - High damage, long range, very slow
  */
 class SniperUnit extends BaseUnit {
-    static COST = 50;
+    static COST = 600;
     static SPAWN_COOLDOWN = 10000;
     static SIZE = 30;
     static SPEED = 0.6;

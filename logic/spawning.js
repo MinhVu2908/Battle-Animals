@@ -103,8 +103,8 @@ function spawnEnemyUnit() {
     
     const unit = spawnUnit(UnitClass, true);
     
-    if (unit && gameState.currentLevel > 1) {
-        const levelMultiplier = 1 + (gameState.currentLevel - 1) * 0.5;
+    if (unit && gameState.currentLevel > 0) {
+        const levelMultiplier = 0.5 + (gameState.currentLevel - 1) * 0.5;
         
         unit.health = Math.floor(unit.health * levelMultiplier);
         unit.maxHealth = Math.floor(unit.maxHealth * levelMultiplier);

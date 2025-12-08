@@ -2,7 +2,7 @@
  * Poison Unit Class - Applies poison damage over time
  */
 class PoisonUnit extends BaseUnit {
-    static COST = 35;
+    static COST = 75;
     static SPAWN_COOLDOWN = 7000;
     static SIZE = 30;
     static SPEED = 1.5;

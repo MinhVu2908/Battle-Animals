@@ -2,7 +2,7 @@
  * Suicide Bomber Unit Class
  */
 class SuicideBomberUnit extends BaseUnit {
-    static COST = 30;
+    static COST = 300;
     static SPAWN_COOLDOWN = 5000;
     static SIZE = 30;
     static SPEED = 3.5;
